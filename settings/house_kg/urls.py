@@ -3,6 +3,8 @@ from .views import *
 from django.urls import path, include
 
 router = DefaultRouter()
+router.register(r'city', CityViewSet, basename='city')
+router.register(r'district', DistrictViewSet, basename='district')
 router.register(r'profile', ProfileViewSet, basename='profile')
 router.register(r'property', PropertyViewSet, basename='property')
 router.register(r'review', ReviewViewSet, basename='review')

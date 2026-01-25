@@ -38,3 +38,6 @@ class ReviewAdmin(TranslationAdmin):
         css = {
             'screen': ('modeltranslation/css/tabbed_translation_fields.css',),
         }
+
+admin.site.register(City)
+admin.site.register(District)

@@ -70,11 +70,11 @@ class Property(models.Model):
     rooms = models.PositiveSmallIntegerField(null=True, blank=True)
     floor = models.PositiveSmallIntegerField(null=True, blank=True)
     total_floors = models.PositiveSmallIntegerField(null=True, blank=True)
-    created_date = models.DateField(auto_now_add=True)
     condition = models.CharField(choices=CONDITION_CHOICES)
     images = models.ImageField(upload_to='property_images/', null=True, blank=True)
     documents = models.FileField(upload_to='property_documents/', null=True, blank=True)
     seller = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
+    created_date = models.DateField(auto_now_add=True)
 
     def __str__(self):
         return f'{self.title} - {self.price}'

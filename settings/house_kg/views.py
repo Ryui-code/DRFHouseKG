@@ -10,9 +10,20 @@ from django_filters.rest_framework import DjangoFilterBackend
 from .filter import PropertyFilter, UserFilterSet
 from rest_framework.filters import OrderingFilter, SearchFilter
 
-class RegisterView(generics.CreateAPIView):
+class RegisterView(GenericAPIView):
     serializer_class = RegisterSerializer
     permission_classes = [AllowAny]
+
+    def post(self, request):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user = serializer.save()
+        refresh = RefreshToken.for_user(user)
+
+        return Response({
+            "refresh": str(refresh),
+            "access": str(refresh.access_token),
+        })
 
 class LoginView(GenericAPIView):
     permission_classes = [AllowAny]
@@ -29,7 +40,7 @@ class LoginView(GenericAPIView):
             "access": str(refresh.access_token),
         })
 
-class LogoutView(APIView):
+class LogoutView(GenericAPIView):
     permission_classes = [AllowAny]
 
     def post(self, request):

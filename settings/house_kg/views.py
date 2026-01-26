@@ -65,7 +65,7 @@ class ProfileViewSet(viewsets.ReadOnlyModelViewSet):
 class PropertyViewSet(viewsets.ModelViewSet):
     queryset = Property.objects.all()
     serializer_class = PropertySerializer
-    permission_class = [IsSellerForProperty]
+    permission_class = [IsSellerForProperty, IsAuthenticated]
     filter_backends = [DjangoFilterBackend, OrderingFilter, SearchFilter]
     search_fields = ['title', 'description']
     filterset_class = PropertyFilter
@@ -73,7 +73,7 @@ class PropertyViewSet(viewsets.ModelViewSet):
 class ReviewViewSet(viewsets.ModelViewSet):
     queryset = Review.objects.all()
     serializer_class = ReviewSerializer
-    permission_classes = [IsBuyerForReview]
+    permission_classes = [IsBuyerForReview, IsAuthenticated]
 
 class CityViewSet(viewsets.ModelViewSet):
     queryset = City.objects.all()

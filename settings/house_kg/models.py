@@ -84,6 +84,7 @@ class Review(models.Model):
     seller = models.ForeignKey(UserProfile, on_delete=models.CASCADE, related_name='review_seller')
     rating = models.PositiveSmallIntegerField(choices=[(i, str(i)) for i in range(1, 11)])
     comment = models.TextField()
+    created_date = models.DateField(auto_now_add=True)
 
     def __str__(self):
         return f'{self.buyer} > {self.seller}: {self.rating}/10'

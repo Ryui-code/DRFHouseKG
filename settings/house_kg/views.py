@@ -1,4 +1,4 @@
-from rest_framework import viewsets, status
+from rest_framework import viewsets, status, views
 from .permissions import IsSellerForProperty, IsBuyerForReview
 from .serializers import *
 from rest_framework.permissions import AllowAny, IsAuthenticated
@@ -8,6 +8,9 @@ from rest_framework.response import Response
 from django_filters.rest_framework import DjangoFilterBackend
 from .filter import PropertyFilter, UserFilterSet
 from rest_framework.filters import OrderingFilter, SearchFilter
+import joblib
+from django.conf import settings
+import os
 
 class RegisterView(GenericAPIView):
     serializer_class = RegisterSerializer
@@ -84,3 +87,32 @@ class DistrictViewSet(viewsets.ModelViewSet):
     queryset = District.objects.all()
     serializer_class = DistrictSerializer
     permission_classes = [IsAuthenticated]
+
+model_path = os.path.join(settings.BASE_DIR, 'model (1).pkl')
+model = joblib.load(model_path)
+
+scaler_path = os.path.join(settings.BASE_DIR, 'scaler (1).pkl')
+scaler = joblib.load(scaler_path)
+
+neighborhoods = [
+    'Blueste', 'BrDale', 'BrkSide', 'ClearCr', 'CollgCr', 'Crawfor',
+    'Edwards', 'Gilbert', 'IDOTRR', 'MeadowV', 'Mitchel', 'NAmes',
+    'NPkVill', 'NWAmes', 'NoRidge', 'NridgHt', 'OldTown', 'SWISU',
+    'Sawyer', 'SawyerW', 'Somerst', 'StoneBr', 'Timber', 'Veenker'
+]
+
+class PricePredict(views.APIView):
+
+    def post(self, request):
+        serializer = PricePredictSerializer(data=request.data)
+        if serializer.is_valid():
+            data = serializer.validated_data
+            new_neighborhood = data.pop('Neighborhood')
+            neighborhood1or_0 = [1 if new_neighborhood == i else 0 for i in neighborhoods]
+
+            features = list(data.values()) + neighborhood1or_0
+            scaled_data = scaler.transform([features])
+            predict = model.predict(scaled_data)[0]
+
+            return Response({'predict': predict}, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

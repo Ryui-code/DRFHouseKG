@@ -13,5 +13,6 @@ urlpatterns = [
     path('register/', RegisterView.as_view(), name='register'),
     path('login/', LoginView.as_view(), name='login'),
     path('logout/', LogoutView.as_view(), name='logout'),
+    path('predict/', PricePredict.as_view(), name='predict'),
     path('', include(router.urls))
 ]

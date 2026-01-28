@@ -1,6 +1,7 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from phonenumber_field.modelfields import PhoneNumberField
+from django.utils import timezone
 
 STATUS_CHOICES = (
     ('Buyer', 'Buyer'),
@@ -84,7 +85,17 @@ class Review(models.Model):
     seller = models.ForeignKey(UserProfile, on_delete=models.CASCADE, related_name='review_seller')
     rating = models.PositiveSmallIntegerField(choices=[(i, str(i)) for i in range(1, 11)])
     comment = models.TextField()
-    created_date = models.DateField(auto_now_add=True)
+    created_date = models.DateField(auto_now_add=True, null=True)
 
     def __str__(self):
         return f'{self.buyer} > {self.seller}: {self.rating}/10'
+
+class House(models.Model):
+    GrLivArea = models.IntegerField()
+    YearBuilt = models.IntegerField()
+    GarageCars = models.IntegerField()
+    TotalBsmtSF = models.IntegerField()
+    FullBath = models.IntegerField()
+    OverallQual = models.IntegerField()
+    Neighborhood = models.CharField(max_length=64)
+    predicted_price = models.FloatField(null=True, blank=True)

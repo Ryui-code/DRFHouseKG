@@ -107,12 +107,18 @@ class PricePredict(views.APIView):
         serializer = PricePredictSerializer(data=request.data)
         if serializer.is_valid():
             data = serializer.validated_data
-            new_neighborhood = data.pop('Neighborhood')
+            new_neighborhood = data.get('Neighborhood')
             neighborhood1or_0 = [1 if new_neighborhood == i else 0 for i in neighborhoods]
 
-            features = list(data.values()) + neighborhood1or_0
+            features = [data['GrLivArea'],
+                        data['YearBuilt'],
+                        data['GarageCars'],
+                        data['TotalBsmtSF'],
+                        data['FullBath'],
+                        data['OverallQual'],
+                        ] + neighborhood1or_0
             scaled_data = scaler.transform([features])
             predict = model.predict(scaled_data)[0]
-
-            return Response({'predict': predict}, status=status.HTTP_200_OK)
+            house = serializer.save(predicted_price=round(predict))
+            return Response({'data': PricePredictSerializer(house).data}, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

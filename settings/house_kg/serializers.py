@@ -57,11 +57,7 @@ class DistrictSerializer(serializers.ModelSerializer):
         model = District
         fields = '__all__'
 
-class PricePredictSerializer(serializers.Serializer):
-    GrLivArea = serializers.IntegerField()
-    YearBuilt = serializers.IntegerField()
-    GarageCars = serializers.IntegerField()
-    TotalBsmtSF = serializers.IntegerField()
-    FullBath = serializers.IntegerField()
-    OverallQual = serializers.IntegerField()
-    Neighborhood = serializers.CharField(max_length=64)
+class PricePredictSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = House
+        fields = '__all__'

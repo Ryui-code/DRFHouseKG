@@ -15,7 +15,7 @@ class CustomUserAdmin(UserAdmin):
     ]
     readonly_fields = ['registered_date']
 
-admin.register(Property)
+admin.site.register(Property)
 class PropertyAdmin(TranslationAdmin):
     class Media:
         js = (
@@ -27,7 +27,7 @@ class PropertyAdmin(TranslationAdmin):
             'screen': ('modeltranslation/css/tabbed_translation_fields.css',),
         }
 
-admin.register(Review)
+admin.site.register(Review)
 class ReviewAdmin(TranslationAdmin):
     class Media:
         js = (
